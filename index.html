@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پنل مدیریت شخصی | Personal Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- طراحی و توسعه داده شده توسط Arashwsalemi  -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                        },
+                        dark: '#1e293b',
+                        light: '#f8fafc'
+                    },
+                    fontFamily: {
+                        sans: ['Vazir', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'neumorphism': '8px 8px 16px #d1d9e6, -8px -8px 16px #ffffff',
+                        'neumorphism-inset': 'inset 2px 2px 5px #d1d9e6, inset -2px -2px 5px #ffffff'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @font-face {
+            font-family: 'Vazir';
+            src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff') format('woff');
+        }
+        body {
+            font-family: 'Vazir', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .neumorphic {
+            border-radius: 15px;
+            background: #f0f2f5;
+            box-shadow:  8px 8px 16px #d1d9e6, -8px -8px 16px #ffffff;
+        }
+        .neumorphic-inset {
+            border-radius: 15px;
+            background: #f0f2f5;
+            box-shadow: inset 2px 2px 5px #d1d9e6, inset -2px -2px 5px #ffffff;
+        }
+        .music-player-progress {
+            -webkit-appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: #e2e8f0;
+            outline: none;
+        }
+        .music-player-progress::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #8b5cf6;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <div class="flex h-screen overflow-hidden">
+        <!-- نوار کناری -->
+        <aside class="w-72 bg-white shadow-xl hidden md:flex flex-col transition-all duration-300">
+            <div class="p-6 flex items-center justify-center border-b border-gray-200">
+                <div class="w-14 h-14 rounded-full bg-gradient-to-r from-primary-600 to-secondary-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">M</div>
+                <h1 class="mr-4 text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">منوی شخصی</h1>
+            </div>
+            
+            <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+                <a href="#" data-tab="dashboard" class="flex items-center p-4 rounded-xl bg-gradient-to-r from-primary-50 to-primary-100 text-primary-700 font-medium border border-primary-100 tab-button active">
+                    <i class="fas fa-home ml-3 text-lg"></i>
+                    <span>داشبورد</span>
+                    <i class="fas fa-chevron-left mr-auto text-primary-400"></i>
+                </a>
+                <a href="#" data-tab="tasks" class="flex items-center p-4 rounded-xl hover:bg-gray-50 text-gray-600 font-medium border border-transparent hover:border-gray-200 tab-button">
+                    <i class="fas fa-tasks ml-3 text-lg"></i>
+                    <span>تسک‌ها</span>
+                    <i class="fas fa-chevron-left mr-auto text-gray-400 opacity-0"></i>
+                </a>
+                <a href="#" data-tab="goals" class="flex items-center p-4 rounded-xl hover:bg-gray-50 text-gray-600 font-medium border border-transparent hover:border-gray-200 tab-button">
+                    <i class="fas fa-bullseye ml-3 text-lg"></i>
+                    <span>اهداف</span>
+                    <i class="fas fa-chevron-left mr-auto text-gray-400 opacity-0"></i>
+                </a>
+                <a href="#" data-tab="files" class="flex items-center p-4 rounded-xl hover:bg-gray-50 text-gray-600 font-medium border border-transparent hover:border-gray-200 tab-button">
+                    <i class="fas fa-file-alt ml-3 text-lg"></i>
+                    <span>فایل‌ها</span>
+                    <i class="fas fa-chevron-left mr-auto text-gray-400 opacity-0"></i>
+                </a>
+                <a href="#" data-tab="gallery" class="flex items-center p-4 rounded-xl hover:bg-gray-50 text-gray-600 font-medium border border-transparent hover:border-gray-200 tab-button">
+                    <i class="fas fa-images ml-3 text-lg"></i>
+                    <span>گالری</span>
+                    <i class="fas fa-chevron-left mr-auto text-gray-400 opacity-0"></i>
+                </a>
+                <a href="#" data-tab="music" class="flex items-center p-4 rounded-xl hover:bg-gray-50 text-gray-600 font-medium border border-transparent hover:border-gray-200 tab-button">
+                    <i class="fas fa-music ml-3 text-lg"></i>
+                    <span>موزیک‌ها</span>
+                    <i class="fas fa-chevron-left mr-auto text-gray-400 opacity-0"></i>
+                </a>
+                <a href="#" data-tab="calendar" class="flex items-center p-4 rounded-xl hover:bg-gray-50 text-gray-600 font-medium border border-transparent hover:border-gray-200 tab-button">
+                    <i class="fas fa-calendar-alt ml-3 text-lg"></i>
+                    <span>تقویم</span>
+                    <i class="fas fa-chevron-left mr-auto text-gray-400 opacity-0"></i>
+                </a>
+                <a href="#" data-tab="settings" class="flex items-center p-4 rounded-xl hover:bg-gray-50 text-gray-600 font-medium border border-transparent hover:border-gray-200 tab-button">
+                    <i class="fas fa-cog ml-3 text-lg"></i>
+                    <span>تنظیمات</span>
+                    <i class="fas fa-chevron-left mr-auto text-gray-400 opacity-0"></i>
+                </a>
+            </nav>
+            
+            <div class="p-4 border-t border-gray-200">
+                <div class="flex items-center p-3 rounded-xl bg-gray-50">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center text-white shadow-md">
+                        <i class="fas fa-user text-xl"></i>
+                    </div>
+                    <div class="mr-3">
+                        <p class="font-medium">@PrintArash  </p>
+                        <p class="text-sm text-gray-500">حساب کاربری</p>
+                    </div>
+                    <button class="mr-auto text-gray-500 hover:text-primary-600">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- محتوای اصلی -->
+        <main class="flex-1 flex flex-col overflow-hidden">
+            <!-- هدر -->
+            <header class="bg-white shadow-sm p-4 flex items-center justify-between">
+                <div class="flex items-center">
+                    <button id="sidebarToggle" class="md:hidden text-gray-600 mr-3 hover:text-primary-600">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <h2 class="text-xl font-bold text-gray-800">داشبورد شخصی</h2>
+                </div>
+                
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <div class="relative">
+                        <input type="text" placeholder="جستجو..." class="pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent w-64">
+                        <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+                    </div>
+                    <button class="text-gray-600 hover:text-primary-600 relative">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center text-white shadow-md cursor-pointer">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- محتوای تب‌بندی شده -->
+            <div class="flex-1 overflow-y-auto p-6 bg-gray-50">
+                <div class="max-w-7xl mx-auto">
+                    <!-- تب‌ها -->
+                    <div class="bg-white rounded-xl shadow-sm p-1 mb-6">
+                        <nav class="flex space-x-1 space-x-reverse">
+                            <button data-tab="dashboard" class="py-3 px-6 rounded-lg font-medium text-sm tab-button active bg-primary-50 text-primary-700 flex items-center">
+                                <i class="fas fa-home ml-2"></i>
+                                <span>داشبورد</span>
+                            </button>
+                            <button data-tab="tasks" class="py-3 px-6 rounded-lg font-medium text-sm tab-button text-gray-600 hover:bg-gray-100 flex items-center">
+                                <i class="fas fa-tasks ml-2"></i>
+                                <span>تسک‌ها</span>
+                            </button>
+                            <button data-tab="goals" class="py-3 px-6 rounded-lg font-medium text-sm tab-button text-gray-600 hover:bg-gray-100 flex items-center">
+                                <i class="fas fa-bullseye ml-2"></i>
+                                <span>اهداف</span>
+                            </button>
+                            <button data-tab="files" class="py-3 px-6 rounded-lg font-medium text-sm tab-button text-gray-600 hover:bg-gray-100 flex items-center">
+                                <i class="fas fa-file-alt ml-2"></i>
+                                <span>فایل‌ها</span>
+                            </button>
+                            <button data-tab="gallery" class="py-3 px-6 rounded-lg font-medium text-sm tab-button text-gray-600 hover:bg-gray-100 flex items-center">
+                                <i class="fas fa-images ml-2"></i>
+                                <span>گالری</span>
+                            </button>
+                            <button data-tab="music" class="py-3 px-6 rounded-lg font-medium text-sm tab-button text-gray-600 hover:bg-gray-100 flex items-center">
+                                <i class="fas fa-music ml-2"></i>
+                                <span>موزیک</span>
+                            </button>
+                        </nav>
+                    </div>
+                    
+                    <!-- محتوای تب‌ها -->
+                    <!-- داشبورد -->
+                    <div id="dashboard" class="tab-content active">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                            <div class="neumorphic rounded-xl p-6 flex items-center transition-all hover:transform hover:-translate-y-1">
+                                <div class="p-3 rounded-xl bg-gradient-to-r from-primary-100 to-primary-50 text-primary-600 mr-4 shadow-inner">
+                                    <i class="fas fa-tasks text-2xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500 text-sm">تسک‌های فعال</p>
+                                    <p class="text-2xl font-bold text-gray-800">12</p>
+                                </div>
+                            </div>
+                            
+                            <div class="neumorphic rounded-xl p-6 flex items-center transition-all hover:transform hover:-translate-y-1">
+                                <div class="p-3 rounded-xl bg-gradient-to-r from-secondary-100 to-secondary-50 text-secondary-600 mr-4 shadow-inner">
+                                    <i class="fas fa-bullseye text-2xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500 text-sm">اهداف در حال انجام</p>
+                                    <p class="text-2xl font-bold text-gray-800">5</p>
+                                </div>
+                            </div>
+                            
+                            <div class="neumorphic rounded-xl p-6 flex items-center transition-all hover:transform hover:-translate-y-1">
+                                <div class="p-3 rounded-xl bg-gradient-to-r from-blue-100 to-blue-50 text-blue-600 mr-4 shadow-inner">
+                                    <i class="fas fa-file-alt text-2xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500 text-sm">فایل‌های ذخیره شده</p>
+                                    <p class="text-2xl font-bold text-gray-800">47</p>
+                                </div>
+                            </div>
+                            
+                            <div class="neumorphic rounded-xl p-6 flex items-center transition-all hover:transform hover:-translate-y-1">
+                                <div class="p-3 rounded-xl bg-gradient-to-r from-green-100 to-green-50 text-green-600 mr-4 shadow-inner">
+                                    <i class="fas fa-music text-2xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500 text-sm">آهنگ‌های ذخیره شده</p>
+                                    <p class="text-2xl font-bold text-gray-800">128</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                            <!-- تسک‌های اخیر -->
+                            <div class="neumorphic rounded-xl overflow-hidden lg:col-span-2">
+                                <div class="p-5 border-b border-gray-200 flex justify-between items-center">
+                                    <h3 class="text-lg font-medium text-gray-900">تسک‌های اخیر</h3>
+                                    <button class="text-primary-600 hover:text-primary-800 text-sm font-medium">مشاهده همه</button>
+                                </div>
+                                <div class="divide-y divide-gray-200">
+                                    <div class="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                                        <div class="flex items-center">
+                                            <label class="inline-flex items-center">
+                                                <input type="checkbox" class="h-5 w-5 text-primary-600 rounded border-gray-300 focus:ring-primary-500">
+                                            </label>
+                                            <div class="mr-3">
+                                                <p class="font-medium">تکمیل پروژه مدیریت شخصی</p>
+                                                <p class="text-sm text-gray-500 flex items-center mt-1">
+                                                    <i class="fas fa-calendar-alt ml-1 text-xs"></i>
+                                                    <span>تاریخ deadline: 1402/05/20</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span class="px-3 py-1 text-xs rounded-full bg-indigo-100 text-primary-700">کار</span>
+                                            <button class="text-gray-400 hover:text-gray-600 ml-3">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                                        <div class="flex items-center">
+                                            <label class="inline-flex items-center">
+                                                <input type="checkbox" class="h-5 w-5 text-primary-600 rounded border-gray-300 focus:ring-primary-500">
+                                            </label>
+                                            <div class="mr-3">
+                                                <p class="font-medium">خرید کتاب‌های جدید</p>
+                                                <p class="text-sm text-gray-500 flex items-center mt-1">
+                                                    <i class="fas fa-calendar-alt ml-1 text-xs"></i>
+                                                    <span>تاریخ deadline: 1402/05/15</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span class="px-3 py-1 text-xs rounded-full bg-green-100 text-green-800">شخصی</span>
+                                            <button class="text-gray-400 hover:text-gray-600 ml-3">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                                        <div class="flex items-center">
+                                            <label class="inline-flex items-center">
+                                                <input type="checkbox" class="h-5 w-5 text-primary-600 rounded border-gray-300 focus:ring-primary-500" checked>
+                                            </label>
+                                            <div class="mr-3">
+                                                <p class="font-medium line-through text-gray-400">تمرین برنامه‌نویسی</p>
+                                                <p class="text-sm text-gray-500 flex items-center mt-1">
+                                                    <i class="fas fa-calendar-alt ml-1 text-xs"></i>
+                                                    <span>تکمیل شده در 1402/05/10</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span class="px-3 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">آموزش</span>
+                                            <button class="text-gray-400 hover:text-gray-600 ml-3">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- اهداف -->
+                            <div class="neumorphic rounded-xl overflow-hidden">
+                                <div class="p-5 border-b border-gray-200">
+                                    <h3 class="text-lg font-medium text-gray-900">پیشرفت اهداف</h3>
+                                </div>
+                                <div class="p-5">
+                                    <div class="mb-6">
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-sm font-medium">یادگیری React</span>
+                                            <span class="text-sm font-medium">65%</span>
+                                        </div>
+                                        <div class="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="h-full bg-gradient-to-r from-primary-400 to-primary-600 rounded-full" style="width: 65%"></div>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-1">تا 75% باقی مانده</p>
+                                    </div>
+                                    <div class="mb-6">
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-sm font-medium">کتاب خواندن</span>
+                                            <span class="text-sm font-medium">40%</span>
+                                        </div>
+                                        <div class="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="h-full bg-gradient-to-r from-secondary-400 to-secondary-600 rounded-full" style="width: 40%"></div>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-1">2 کتاب از 5 کتاب</p>
+                                    </div>
+                                    <div class="mb-6">
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-sm font-medium">تمرین ورزشی</span>
+                                            <span class="text-sm font-medium">85%</span>
+                                        </div>
+                                        <div class="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="h-full bg-gradient-to-r from-green-400 to-green-600 rounded-full" style="width: 85%"></div>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-1">17 روز از 20 روز</p>
+                                    </div>
+                                    <button class="w-full py-2 bg-primary-50 hover:bg-primary-100 text-primary-700 rounded-lg font-medium transition-colors">
+                                        افزودن هدف جدید
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- فایل‌های اخیر و فعالیت‌ها -->
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- فایل‌های اخیر -->
+                            <div class="neumorphic rounded-xl overflow-hidden lg:col-span-2">
+                                <div class="p-5 border-b border-gray-200 flex justify-between items-center">
+                                    <h3 class="text-lg font-medium text-gray-900">فایل‌های اخیر</h3>
+                                    <button class="text-primary-600 hover:text-primary-800 text-sm font-medium">مشاهده همه</button>
+                                </div>
+                                <div class="divide-y divide-gray-200">
+                                    <div class="p-4 flex items-center hover:bg-gray-50 transition-colors">
+                                        <div class="p-3 rounded-xl bg-blue-100 text-blue-600 mr-4 shadow-inner">
+                                            <i class="fas fa-file-pdf text-xl"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="font-medium">مستندات پروژه.pdf</p>
+                                            <p class="text-sm text-gray-500 flex items-center mt-1">
+                                                <i class="fas fa-hdd ml-1 text-xs"></i>
+                                                <span>2.4 MB</span>
+                                                <i class="fas fa-clock ml-2 text-xs"></i>
+                                                <span>3 روز پیش</span>
+                                            </p>
+                                        </div>
+                                        <div class="flex space-x-2 space-x-reverse">
+                                            <button class="w-8 h-8 rounded-full hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                                <i class="fas fa-download text-gray-600"></i>
+                                            </button>
+                                            <button class="w-8 h-8 rounded-full hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                                <i class="fas fa-ellipsis-v text-gray-600"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="p-4 flex items-center hover:bg-gray-50 transition-colors">
+                                        <div class="p-3 rounded-xl bg-green-100 text-green-600 mr-4 shadow-inner">
+                                            <i class="fas fa-file-excel text-xl"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="font-medium">لیست کارها.xlsx</p>
+                                            <p class="text-sm text-gray-500 flex items-center mt-1">
+                                                <i class="fas fa-hdd ml-1 text-xs"></i>
+                                                <span>1.8 MB</span>
+                                                <i class="fas fa-clock ml-2 text-xs"></i>
+                                                <span>1 هفته پیش</span>
+                                            </p>
+                                        </div>
+                                        <div class="flex space-x-2 space-x-reverse">
+                                            <button class="w-8 h-8 rounded-full hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                                <i class="fas fa-download text-gray-600"></i>
+                                            </button>
+                                            <button class="w-8 h-8 rounded-full hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                                <i class="fas fa-ellipsis-v text-gray-600"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="p-4 flex items-center hover:bg-gray-50 transition-colors">
+                                        <div class="p-3 rounded-xl bg-purple-100 text-purple-600 mr-4 shadow-inner">
+                                            <i class="fas fa-file-word text-xl"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="font-medium">مقاله تحقیقی.docx</p>
+                                            <p class="text-sm text-gray-500 flex items-center mt-1">
+                                                <i class="fas fa-hdd ml-1 text-xs"></i>
+                                                <span>3.2 MB</span>
+                                                <i class="fas fa-clock ml-2 text-xs"></i>
+                                                <span>2 هفته پیش</span>
+                                            </p>
+                                        </div>
+                                        <div class="flex space-x-2 space-x-reverse">
+                                            <button class="w-8 h-8 rounded-full hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                                <i class="fas fa-download text-gray-600"></i>
+                                            </button>
+                                            <button class="w-8 h-8 rounded-full hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                                <i class="fas fa-ellipsis-v text-gray-600"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- فعالیت‌های اخیر -->
+                            <div class="neumorphic rounded-xl overflow-hidden">
+                                <div class="p-5 border-b border-gray-200">
+                                    <h3 class="text-lg font-medium text-gray-900">فعالیت‌های اخیر</h3>
+                                </div>
+                                <div class="p-5 space-y-4">
+                                    <div class="flex">
+                                        <div class="mr-3">
+                                            <div class="w-10 h-10 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center">
+                                                <i class="fas fa-check"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-sm font-medium">تسک "تمرین برنامه‌نویسی" تکمیل شد</p>
+                                            <p class="text-xs text-gray-500 mt-1">امروز، 14:30</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex">
+                                        <div class="mr-3">
+                                            <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                                                <i class="fas fa-file-upload"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-sm font-medium">فایل جدید آپلود شد: "مقاله تحقیقی.docx"</p>
+                                            <p class="text-xs text-gray-500 mt-1">دیروز، 18:45</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex">
+                                        <div class="mr-3">
+                                            <div class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center">
+                                                <i class="fas fa-bullseye"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-sm font-medium">هدف جدید اضافه شد: "یادگیری React"</p>
+                                            <p class="text-xs text-gray-500 mt-1">2 روز پیش، 10:15</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex">
+                                        <div class="mr-3">
+                                            <div class="w-10 h-10 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center">
+                                                <i class="fas fa-music"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-sm font-medium">آهنگ جدید به لیست اضافه شد: "Shape of You"</p>
+                                            <p class="text-xs text-gray-500 mt-1">3 روز پیش، 21:30</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- تسک‌ها -->
+                    <div id="tasks" class="tab-content">
+                        <div class="neumorphic rounded-xl overflow-hidden mb-6">
+                            <div class="p-5 border-b border-gray-200 flex justify-between items-center">
+                                <h3 class="text-lg font-medium text-gray-900">همه تسک‌ها</h3>
+                                <button class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
+                                    <i class="fas fa-plus ml-2"></i>
+                                    <span>تسک جدید</span>
+                                </button>
+                            </div>
+                            <div class="p-5">
+                                <div class="flex items-center mb-4">
+                                    <input type="text" placeholder="جستجوی تسک‌ها..." class="flex-1 pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                    <i class="fas fa-search absolute right-8 text-gray-400"></i>
+                                    <button class="ml-3 w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                        <i class="fas fa-sliders-h text-gray-600"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="space-y-3">
+                                    <div class="p-4 rounded-lg border border-gray-200 hover:border-primary-300 transition-colors">
+                                        <div class="flex items-start">
+                                            <label class="inline-flex items-center mt-1">
+                                                <input type="checkbox" class="h-5 w-5 text-primary-600 rounded border-gray-300 focus:ring-primary-500">
+                                            </label>
+                                            <div class="mr-3 flex-1">
+                                                <p class="font-medium">طراحی رابط کاربری داشبورد</p>
+                                                <p class="text-sm text-gray-500 mt-1">طراحی رابط کاربری برای بخش مدیریت تسک‌ها با Tailwind CSS</p>
+                                                <div class="flex items-center mt-2 space-x-3 space-x-reverse">
+                                                    <span class="px-2 py-1 text-xs rounded-full bg-primary-100 text-primary-800">کار</span>
+                                                    <span class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800 flex items-center">
+                                                        <i class="fas fa-calendar-alt ml-1 text-xs"></i>
+                                                        <span>1402/05/25</span>
+                                                    </span>
+                                                    <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800 flex items-center">
+                                                        <i class="fas fa-flag ml-1 text-xs"></i>
+                                                        <span>متوسط</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <button class="text-gray-400 hover:text-gray-600">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="p-4 rounded-lg border border-gray-200 hover:border-primary-300 transition-colors">
+                                        <div class="flex items-start">
+                                            <label class="inline-flex items-center mt-1">
+                                                <input type="checkbox" class="h-5 w-5 text-primary-600 rounded border-gray-300 focus:ring-primary-500" checked>
+                                            </label>
+                                            <div class="mr-3 flex-1">
+                                                <p class="font-medium text-gray-400 line-through">خرید کتاب JavaScript</p>
+                                                <p class="text-sm text-gray-500 mt-1">خرید کتاب "Eloquent JavaScript" از کتابخانه</p>
+                                                <div class="flex items-center mt-2 space-x-3 space-x-reverse">
+                                                    <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">شخصی</span>
+                                                    <span class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800 flex items-center">
+                                                        <i class="fas fa-calendar-alt ml-1 text-xs"></i>
+                                                        <span>1402/05/15</span>
+                                                    </span>
+                                                    <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800 flex items-center">
+                                                        <i class="fas fa-flag ml-1 text-xs"></i>
+                                                        <span>کم</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <button class="text-gray-400 hover:text-gray-600">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="p-4 rounded-lg border border-gray-200 hover:border-primary-300 transition-colors">
+                                        <div class="flex items-start">
+                                            <label class="inline-flex items-center mt-1">
+                                                <input type="checkbox" class="h-5 w-5 text-primary-600 rounded border-gray-300 focus:ring-primary-500">
+                                            </label>
+                                            <div class="mr-3 flex-1">
+                                                <p class="font-medium">تمرین الگوریتم‌ها</p>
+                                                <p class="text-sm text-gray-500 mt-1">حل 5 مسئله الگوریتمی در LeetCode</p>
+                                                <div class="flex items-center mt-2 space-x-3 space-x-reverse">
+                                                    <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">آموزش</span>
+                                                    <span class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800 flex items-center">
+                                                        <i class="fas fa-calendar-alt ml-1 text-xs"></i>
+                                                        <span>1402/05/30</span>
+                                                    </span>
+                                                    <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800 flex items-center">
+                                                        <i class="fas fa-flag ml-1 text-xs"></i>
+                                                        <span>زیاد</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <button class="text-gray-400 hover:text-gray-600">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4 flex justify-between items-center">
+                                    <p class="text-sm text-gray-500">نمایش 3 از 12 تسک</p>
+                                    <div class="flex space-x-2 space-x-reverse">
+                                        <button class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                            <i class="fas fa-chevron-right text-gray-600"></i>
+                                        </button>
+                                        <button class="w-8 h-8 rounded-lg bg-primary-600 text-white flex items-center justify-center">
+                                            1
+                                        </button>
+                                        <button class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                            2
+                                        </button>
+                                        <button class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                            <i class="fas fa-chevron-left text-gray-600"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- اهداف -->
+                    <div id="goals" class="tab-content">
+                        <div class="neumorphic rounded-xl overflow-hidden mb-6">
+                            <div class="p-5 border-b border-gray-200 flex justify-between items-center">
+                                <h3 class="text-lg font-medium text-gray-900">اهداف من</h3>
+                                <button class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
+                                    <i class="fas fa-plus ml-2"></i>
+                                    <span>هدف جدید</span>
+                                </button>
+                            </div>
+                            <div class="p-5">
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    <div class="neumorphic rounded-xl p-6 hover:transform hover:-translate-y-1 transition-transform">
+                                        <div class="flex justify-between items-start mb-4">
+                                            <h4 class="font-medium text-lg">یادگیری React</h4>
+                                            <button class="text-gray-400 hover:text-gray-600">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                        </div>
+                                        <div class="mb-4">
+                                            <div class="flex justify-between text-sm mb-1">
+                                                <span>پیشرفت</span>
+                                                <span>65%</span>
+                                            </div>
+                                            <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                                                <div class="h-full bg-gradient-to-r from-primary-400 to-primary-600 rounded-full" style="width: 65%"></div>
+                                            </div>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mb-4">یادگیری مفاهیم پیشرفته React شامل Hooks، Context API و Redux</p>
+                                        <div class="flex justify-between items-center text-sm">
+                                            <span class="text-gray-500">شروع: 1402/03/15</span>
+                                            <span class="text-gray-500">پایان: 1402/06/30</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="neumorphic rounded-xl p-6 hover:transform hover:-translate-y-1 transition-transform">
+                                        <div class="flex justify-between items-start mb-4">
+                                            <h4 class="font-medium text-lg">کتاب خواندن</h4>
+                                            <button class="text-gray-400 hover:text-gray-600">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                        </div>
+                                        <div class="mb-4">
+                                            <div class="flex justify-between text-sm mb-1">
+                                                <span>پیشرفت</span>
+                                                <span>40%</span>
+                                            </div>
+                                            <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                                                <div class="h-full bg-gradient-to-r from-secondary-400 to-secondary-600 rounded-full" style="width: 40%"></div>
+                                            </div>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mb-4">خواندن 5 کتاب در زمینه توسعه شخصی و برنامه‌نویسی</p>
+                                        <div class="flex justify-between items-center text-sm">
+                                            <span class="text-gray-500">شروع: 1402/02/01</span>
+                                            <span class="text-gray-500">پایان: 1402/08/01</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="neumorphic rounded-xl p-6 hover:transform hover:-translate-y-1 transition-transform">
+                                        <div class="flex justify-between items-start mb-4">
+                                            <h4 class="font-medium text-lg">تمرین ورزشی</h4>
+                                            <button class="text-gray-400 hover:text-gray-600">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                        </div>
+                                        <div class="mb-4">
+                                            <div class="flex justify-between text-sm mb-1">
+                                                <span>پیشرفت</span>
+                                                <span>85%</span>
+                                            </div>
+                                            <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                                                <div class="h-full bg-gradient-to-r from-green-400 to-green-600 rounded-full" style="width: 85%"></div>
+                                            </div>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mb-4">20 روز ورزش در ماه (تمرینات هوازی و بدنسازی)</p>
+                                        <div class="flex justify-between items-center text-sm">
+                                            <span class="text-gray-500">شروع: 1402/04/01</span>
+                                            <span class="text-gray-500">پایان: 1402/04/30</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="neumorphic rounded-xl p-6 hover:transform hover:-translate-y-1 transition-transform">
+                                        <div class="flex justify-between items-start mb-4">
+                                            <h4 class="font-medium text-lg">یادگیری زبان انگلیسی</h4>
+                                            <button class="text-gray-400 hover:text-gray-600">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                        </div>
+                                        <div class="mb-4">
+                                            <div class="flex justify-between text-sm mb-1">
+                                                <span>پیشرفت</span>
+                                                <span>30%</span>
+                                            </div>
+                                            <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                                                <div class="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full" style="width: 30%"></div>
+                                            </div>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mb-4">تمرین روزانه 30 دقیقه مکالمه و یادگیری لغات جدید</p>
+                                        <div class="flex justify-between items-center text-sm">
+                                            <span class="text-gray-500">شروع: 1402/05/01</span>
+                                            <span class="text-gray-500">پایان: 1402/11/01</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="neumorphic rounded-xl p-6 hover:transform hover:-translate-y-1 transition-transform">
+                                        <div class="flex justify-between items-start mb-4">
+                                            <h4 class="font-medium text-lg">پروژه شخصی</h4>
+                                            <button class="text-gray-400 hover:text-gray-600">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                        </div>
+                                        <div class="mb-4">
+                                            <div class="flex justify-between text-sm mb-1">
+                                                <span>پیشرفت</span>
+                                                <span>25%</span>
+                                            </div>
+                                            <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                                                <div class="h-full bg-gradient-to-r from-purple-400 to-purple-600 rounded-full" style="width: 25%"></div>
+                                            </div>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mb-4">توسعه یک اپلیکیشن مدیریت وظایف با React و Node.js</p>
+                                        <div class="flex justify-between items-center text-sm">
+                                            <span class="text-gray-500">شروع: 1402/05/10</span>
+                                            <span class="text-gray-500">پایان: 1402/09/10</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="neumorphic rounded-xl p-6 flex items-center justify-center hover:transform hover:-translate-y-1 transition-transform border-2 border-dashed border-gray-300 hover:border-primary-400 cursor-pointer">
+                                        <div class="text-center">
+                                            <div class="w-12 h-12 bg-primary-50 rounded-full flex items-center justify-center text-primary-600 mx-auto mb-3">
+                                                <i class="fas fa-plus text-xl"></i>
+                                            </div>
+                                            <p class="text-primary-600 font-medium">افزودن هدف جدید</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- فایل‌ها -->
+                    <div id="files" class="tab-content">
+                        <div class="neumorphic rounded-xl overflow-hidden mb-6">
+                            <div class="p-5 border-b border-gray-200 flex justify-between items-center">
+                                <h3 class="text-lg font-medium text-gray-900">مدیریت فایل‌ها</h3>
+                                <button class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
+                                    <i class="fas fa-upload ml-2"></i>
+                                    <span>آپلود فایل</span>
+                                </button>
+                            </div>
+                            <div class="p-5">
+                                <div class="flex items-center mb-6">
+                                    <div class="flex-1 relative">
+                                        <input type="text" placeholder="جستجوی فایل‌ها..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                        <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+                                    </div>
+                                    <button class="mr-3 w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                        <i class="fas fa-sliders-h text-gray-600"></i>
+                                    </button>
+                                    <div class="flex space-x-1 space-x-reverse">
+                                        <button class="w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                            <i class="fas fa-th-large text-gray-600"></i>
+                                        </button>
+                                        <button class="w-10 h-10 rounded-lg bg-primary-100 text-primary-600 flex items-center justify-center">
+                                            <i class="fas fa-list-ul"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-6">
+                                    <div class="flex items-center space-x-4 space-x-reverse overflow-x-auto pb-2">
+                                        <button class="px-4 py-2 rounded-full bg-primary-600 text-white text-sm font-medium whitespace-nowrap">
+                                            همه فایل‌ها
+                                        </button>
+                                        <button class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium whitespace-nowrap transition-colors">
+                                            <i class="fas fa-image ml-1"></i>
+                                            تصاویر
+                                        </button>
+                                        <button class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium whitespace-nowrap transition-colors">
+                                            <i class="fas fa-file-pdf ml-1"></i>
+                                            PDF
+                                        </button>
+                                        <button class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium whitespace-nowrap transition-colors">
+                                            <i class="fas fa-file-word ml-1"></i>
+                                            Word
+                                        </button>
+                                        <button class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium whitespace-nowrap transition-colors">
+                                            <i class="fas fa-file-excel ml-1"></i>
+                                            Excel
+                                        </button>
+                                        <button class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium whitespace-nowrap transition-colors">
+                                            <i class="fas fa-file-audio ml-1"></i>
+                                            صوتی
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="space-y-4">
+                                    <div class="p-4 rounded-lg bg-gray-50">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-folder text-yellow-500 text-2xl ml-3"></i>
+                                            <div class="flex-1">
+                                                <p class="font-medium">پروژه‌های کاری</p>
+                                                <p class="text-sm text-gray-500">15 فایل | آخرین تغییر: 2 روز پیش</p>
+                                            </div>
+                                            <button class="text-gray-400 hover:text-gray-600">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="p-4 rounded-lg bg-gray-50">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-folder text-blue-500 text-2xl ml-3"></i>
+                                            <div class="flex-1">
+                                                <p class="font-medium">مستندات شخصی</p>
+                                                <p class="text-sm text-gray-500">8 فایل | آخرین تغییر: 1 هفته پیش</p>
+                                            </div>
+                                            <button class="text-gray-400 hover:text-gray-600">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                        <div class="neumorphic rounded-xl p-4 hover:transform hover:-translate-y-1 transition-transform">
+                                            <div class="p-3 rounded-lg bg-blue-100 text-blue-600 mb-3 flex items-center justify-center">
+                                                <i class="fas fa-file-pdf text-3xl"></i>
+                                            </div>
+                                            <p class="font-medium truncate">مستندات پروژه.pdf</p>
+                                            <p class="text-sm text-gray-500">2.4 MB</p>
+                                            <div class="mt-3 flex justify-between items-center">
+                                                <span class="text-xs text-gray-500">3 روز پیش</span>
+                                                <div class="flex space-x-2 space-x-reverse">
+                                                    <button class="text-gray-400 hover:text-primary-600">
+                                                        <i class="fas fa-download"></i>
+                                                    </button>
+                                                    <button class="text-gray-400 hover:text-primary-600">
+                                                        <i class="fas fa-ellipsis-v"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="neumorphic rounded-xl p-4 hover:transform hover:-translate-y-1 transition-transform">
+                                            <div class="p-3 rounded-lg bg-green-100 text-green-600 mb-3 flex items-center justify-center">
+                                                <i class="fas fa-file-excel text-3xl"></i>
+                                            </div>
+                                            <p class="font-medium truncate">لیست کارها.xlsx</p>
+                                            <p class="text-sm text-gray-500">1.8 MB</p>
+                                            <div class="mt-3 flex justify-between items-center">
+                                                <span class="text-xs text-gray-500">1 هفته پیش</span>
+                                                <div class="flex space-x-2 space-x-reverse">
+                                                    <button class="text-gray-400 hover:text-primary-600">
+                                                        <i class="fas fa-download"></i>
+                                                    </button>
+                                                    <button class="text-gray-400 hover:text-primary-600">
+                                                        <i class="fas fa-ellipsis-v"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="neumorphic rounded-xl p-4 hover:transform hover:-translate-y-1 transition-transform">
+                                            <div class="p-3 rounded-lg bg-purple-100 text-purple-600 mb-3 flex items-center justify-center">
+                                                <i class="fas fa-file-word text-3xl"></i>
+                                            </div>
+                                            <p class="font-medium truncate">مقاله تحقیقی.docx</p>
+                                            <p class="text-sm text-gray-500">3.2 MB</p>
+                                            <div class="mt-3 flex justify-between items-center">
+                                                <span class="text-xs text-gray-500">2 هفته پیش</span>
+                                                <div class="flex space-x-2 space-x-reverse">
+                                                    <button class="text-gray-400 hover:text-primary-600">
+                                                        <i class="fas fa-download"></i>
+                                                    </button>
+                                                    <button class="text-gray-400 hover:text-primary-600">
+                                                        <i class="fas fa-ellipsis-v"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="neumorphic rounded-xl p-4 hover:transform hover:-translate-y-1 transition-transform">
+                                            <div class="p-3 rounded-lg bg-red-100 text-red-600 mb-3 flex items-center justify-center">
+                                                <i class="fas fa-file-image text-3xl"></i>
+                                            </div>
+                                            <p class="font-medium truncate">طراحی رابط کاربری.png</p>
+                                            <p class="text-sm text-gray-500">4.7 MB</p>
+                                            <div class="mt-3 flex justify-between items-center">
+                                                <span class="text-xs text-gray-500">4 روز پیش</span>
+                                                <div class="flex space-x-2 space-x-reverse">
+                                                    <button class="text-gray-400 hover:text-primary-600">
+                                                        <i class="fas fa-download"></i>
+                                                    </button>
+                                                    <button class="text-gray-400 hover:text-primary-600">
+                                                        <i class="fas fa-ellipsis-v"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-6 flex justify-between items-center">
+                                    <p class="text-sm text-gray-500">نمایش 8 از 47 فایل</p>
+                                    <div class="flex space-x-2 space-x-reverse">
+                                        <button class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                            <i class="fas fa-chevron-right text-gray-600"></i>
+                                        </button>
+                                        <button class="w-8 h-8 rounded-lg bg-primary-600 text-white flex items-center justify-center">
+                                            1
+                                        </button>
+                                        <button class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                            2
+                                        </button>
+                                        <button class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                            <i class="fas fa-chevron-left text-gray-600"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- گالری -->
+                    <div id="gallery" class="tab-content">
+                        <div class="neumorphic rounded-xl overflow-hidden mb-6">
+                            <div class="p-5 border-b border-gray-200 flex justify-between items-center">
+                                <h3 class="text-lg font-medium text-gray-900">گالری تصاویر</h3>
+                                <button class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
+                                    <i class="fas fa-upload ml-2"></i>
+                                    <span>آپلود تصویر</span>
+                                </button>
+                            </div>
+                            <div class="p-5">
+                                <div class="flex items-center mb-6">
+                                    <div class="flex-1 relative">
+                                        <input type="text" placeholder="جستجوی تصاویر..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                        <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+                                    </div>
+                                    <button class="mr-3 w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                        <i class="fas fa-sliders-h text-gray-600"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="mb-6">
+                                    <div class="flex items-center space-x-4 space-x-reverse overflow-x-auto pb-2">
+                                        <button class="px-4 py-2 rounded-full bg-primary-600 text-white text-sm font-medium whitespace-nowrap">
+                                            همه تصاویر
+                                        </button>
+                                        <button class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium whitespace-nowrap transition-colors">
+                                            طبیعت
+                                        </button>
+                                        <button class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium whitespace-nowrap transition-colors">
+                                            مسافرت
+                                        </button>
+                                        <button class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium whitespace-nowrap transition-colors">
+                                            خانواده
+                                        </button>
+                                        <button class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium whitespace-nowrap transition-colors">
+                                            پروژه‌ها
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                                    <div class="relative group rounded-xl overflow-hidden cursor-pointer">
+                                        <img src="https://source.unsplash.com/random/300x300/?nature" alt="Nature" class="w-full h-40 object-cover rounded-xl group-hover:opacity-90 transition-opacity">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-end p-3">
+                                            <p class="text-white text-sm truncate w-full">تصویر طبیعت</p>
+                                        </div>
+                                        <div class="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button class="w-8 h-8 rounded-full bg-white/80 hover:bg-white text-gray-800 flex items-center justify-center transition-colors">
+                                                <i class="fas fa-heart"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="relative group rounded-xl overflow-hidden cursor-pointer">
+                                        <img src="https://source.unsplash.com/random/300x300/?travel" alt="Travel" class="w-full h-40 object-cover rounded-xl group-hover:opacity-90 transition-opacity">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-end p-3">
+                                            <p class="text-white text-sm truncate w-full">سفر به شمال</p>
+                                        </div>
+                                        <div class="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button class="w-8 h-8 rounded-full bg-white/80 hover:bg-white text-gray-800 flex items-center justify-center transition-colors">
+                                                <i class="fas fa-heart"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="relative group rounded-xl overflow-hidden cursor-pointer">
+                                        <img src="https://source.unsplash.com/random/300x300/?family" alt="Family" class="w-full h-40 object-cover rounded-xl group-hover:opacity-90 transition-opacity">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-end p-3">
+                                            <p class="text-white text-sm truncate w-full">دورهمی خانوادگی</p>
+                                        </div>
+                                        <div class="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button class="w-8 h-8 rounded-full bg-white/80 hover:bg-white text-gray-800 flex items-center justify-center transition-colors">
+                                                <i class="fas fa-heart"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="relative group rounded-xl overflow-hidden cursor-pointer">
+                                        <img src="https://source.unsplash.com/random/300x300/?project" alt="Project" class="w-full h-40 object-cover rounded-xl group-hover:opacity-90 transition-opacity">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-end p-3">
+                                            <p class="text-white text-sm truncate w-full">پروژه کاری</p>
+                                        </div>
+                                        <div class="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button class="w-8 h-8 rounded-full bg-white/80 hover:bg-white text-gray-800 flex items-center justify-center transition-colors">
+                                                <i class="fas fa-heart"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="relative group rounded-xl overflow-hidden cursor-pointer">
+                                        <img src="https://source.unsplash.com/random/300x300/?city" alt="City" class="w-full h-40 object-cover rounded-xl group-hover:opacity-90 transition-opacity">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-end p-3">
+                                            <p class="text-white text-sm truncate w-full">شهر تهران</p>
+                                        </div>
+                                        <div class="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button class="w-8 h-8 rounded-full bg-white/80 hover:bg-white text-gray-800 flex items-center justify-center transition-colors">
+                                                <i class="fas fa-heart"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="relative group rounded-xl overflow-hidden cursor-pointer">
+                                        <img src="https://source.unsplash.com/random/300x300/?mountain" alt="Mountain" class="w-full h-40 object-cover rounded-xl group-hover:opacity-90 transition-opacity">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-end p-3">
+                                            <p class="text-white text-sm truncate w-full">کوهنوردی</p>
+                                        </div>
+                                        <div class="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button class="w-8 h-8 rounded-full bg-white/80 hover:bg-white text-gray-800 flex items-center justify-center transition-colors">
+                                                <i class="fas fa-heart"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="relative group rounded-xl overflow-hidden cursor-pointer">
+                                        <img src="https://source.unsplash.com/random/300x300/?sea" alt="Sea" class="w-full h-40 object-cover rounded-xl group-hover:opacity-90 transition-opacity">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-end p-3">
+                                            <p class="text-white text-sm truncate w-full">دریای خزر</p>
+                                        </div>
+                                        <div class="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button class="w-8 h-8 rounded-full bg-white/80 hover:bg-white text-gray-800 flex items-center justify-center transition-colors">
+                                                <i class="fas fa-heart"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="relative group rounded-xl overflow-hidden cursor-pointer">
+                                        <img src="https://source.unsplash.com/random/300x300/?party" alt="Party" class="w-full h-40 object-cover rounded-xl group-hover:opacity-90 transition-opacity">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-end p-3">
+                                            <p class="text-white text-sm truncate w-full">جشن تولد</p>
+                                        </div>
+                                        <div class="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button class="w-8 h-8 rounded-full bg-white/80 hover:bg-white text-gray-800 flex items-center justify-center transition-colors">
+                                                <i class="fas fa-heart"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="relative group rounded-xl overflow-hidden cursor-pointer">
+                                        <img src="https://source.unsplash.com/random/300x300/?event" alt="Event" class="w-full h-40 object-cover rounded-xl group-hover:opacity-90 transition-opacity">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-end p-3">
+                                            <p class="text-white text-sm truncate w-full">رویداد کاری</p>
+                                        </div>
+                                        <div class="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button class="w-8 h-8 rounded-full bg-white/80 hover:bg-white text-gray-800 flex items-center justify-center transition-colors">
+                                                <i class="fas fa-heart"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="relative group rounded-xl overflow-hidden cursor-pointer">
+                                        <img src="https://source.unsplash.com/random/300x300/?wedding" alt="Wedding" class="w-full h-40 object-cover rounded-xl group-hover:opacity-90 transition-opacity">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-end p-3">
+                                            <p class="text-white text-sm truncate w-full">عروسی</p>
+                                        </div>
+                                        <div class="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button class="w-8 h-8 rounded-full bg-white/80 hover:bg-white text-gray-800 flex items-center justify-center transition-colors">
+                                                <i class="fas fa-heart"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-6 flex justify-between items-center">
+                                    <p class="text-sm text-gray-500">نمایش 10 از 64 تصویر</p>
+                                    <div class="flex space-x-2 space-x-reverse">
+                                        <button class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                            <i class="fas fa-chevron-right text-gray-600"></i>
+                                        </button>
+                                        <button class="w-8 h-8 rounded-lg bg-primary-600 text-white flex items-center justify-center">
+                                            1
+                                        </button>
+                                        <button class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                            2
+                                        </button>
+                                        <button class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                            <i class="fas fa-chevron-left text-gray-600"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- موزیک -->
+                    <div id="music" class="tab-content">
+                        <div class="neumorphic rounded-xl overflow-hidden mb-6">
+                            <div class="p-5 border-b border-gray-200 flex justify-between items-center">
+                                <h3 class="text-lg font-medium text-gray-900">مدیریت موزیک‌ها</h3>
+                                <button class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
+                                    <i class="fas fa-plus ml-2"></i>
+                                    <span>افزودن موزیک</span>
+                                </button>
+                            </div>
+                            <div class="p-5">
+                                <div class="flex items-center mb-6">
+                                    <div class="flex-1 relative">
+                                        <input type="text" placeholder="جستجوی موزیک..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                        <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+                                    </div>
+                                    <button class="mr-3 w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                        <i class="fas fa-sliders-h text-gray-600"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="mb-6">
+                                    <div class="flex items-center space-x-4 space-x-reverse overflow-x-auto pb-2">
+                                        <button class="px-4 py-2 rounded-full bg-primary-600 text-white text-sm font-medium whitespace-nowrap">
+                                            همه موزیک‌ها
+                                        </button>
+                                        <button class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium whitespace-nowrap transition-colors">
+                                            پاپ
+                                        </button>
+                                        <button class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium whitespace-nowrap transition-colors">
+                                            راک
+                                        </button>
+                                        <button class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium whitespace-nowrap transition-colors">
+                                            کلاسیک
+                                        </button>
+                                        <button class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium whitespace-nowrap transition-colors">
+                                            ایرانی
+                                        </button>
+                                        <button class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium whitespace-nowrap transition-colors">
+                                            خارجی
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="space-y-3 mb-8">
+                                    <div class="p-4 rounded-lg bg-gray-50 flex items-center hover:bg-gray-100 transition-colors cursor-pointer">
+                                        <div class="w-12 h-12 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-md">
+                                            <i class="fas fa-music"></i>
+                                        </div>
+                                        <div class="flex-1 mr-4">
+                                            <p class="font-medium">Shape of You</p>
+                                            <p class="text-sm text-gray-500">Ed Sheeran</p>
+                                        </div>
+                                        <div class="text-gray-500">
+                                            <span>3:45</span>
+                                        </div>
+                                        <button class="ml-4 text-gray-400 hover:text-primary-600">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="p-4 rounded-lg bg-gray-50 flex items-center hover:bg-gray-100 transition-colors cursor-pointer">
+                                        <div class="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-teal-500 flex items-center justify-center text-white shadow-md">
+                                            <i class="fas fa-music"></i>
+                                        </div>
+                                        <div class="flex-1 mr-4">
+                                            <p class="font-medium">Blinding Lights</p>
+                                            <p class="text-sm text-gray-500">The Weeknd</p>
+                                        </div>
+                                        <div class="text-gray-500">
+                                            <span>3:20</span>
+                                        </div>
+                                        <button class="ml-4 text-gray-400 hover:text-primary-600">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="p-4 rounded-lg bg-gray-50 flex items-center hover:bg-gray-100 transition-colors cursor-pointer">
+                                        <div class="w-12 h-12 rounded-lg bg-gradient-to-r from-red-500 to-orange-500 flex items-center justify-center text-white shadow-md">
+                                            <i class="fas fa-music"></i>
+                                        </div>
+                                        <div class="flex-1 mr-4">
+                                            <p class="font-medium">Dance Monkey</p>
+                                            <p class="text-sm text-gray-500">Tones and I</p>
+                                        </div>
+                                        <div class="text-gray-500">
+                                            <span>3:30</span>
+                                        </div>
+                                        <button class="ml-4 text-gray-400 hover:text-primary-600">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="p-4 rounded-lg bg-gray-50 flex items-center hover:bg-gray-100 transition-colors cursor-pointer">
+                                        <div class="w-12 h-12 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-white shadow-md">
+                                            <i class="fas fa-music"></i>
+                                        </div>
+                                        <div class="flex-1 mr-4">
+                                            <p class="font-medium">Levitating</p>
+                                            <p class="text-sm text-gray-500">Dua Lipa</p>
+                                        </div>
+                                        <div class="text-gray-500">
+                                            <span>3:23</span>
+                                        </div>
+                                        <button class="ml-4 text-gray-400 hover:text-primary-600">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="p-4 rounded-lg bg-gray-50 flex items-center hover:bg-gray-100 transition-colors cursor-pointer">
+                                        <div class="w-12 h-12 rounded-lg bg-gradient-to-r from-yellow-500 to-amber-500 flex items-center justify-center text-white shadow-md">
+                                            <i class="fas fa-music"></i>
+                                        </div>
+                                        <div class="flex-1 mr-4">
+                                            <p class="font-medium">Stay</p>
+                                            <p class="text-sm text-gray-500">The Kid LAROI, Justin Bieber</p>
+                                        </div>
+                                        <div class="text-gray-500">
+                                            <span>2:21</span>
+                                        </div>
+                                        <button class="ml-4 text-gray-400 hover:text-primary-600">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- پخش کننده موزیک -->
+                                <div class="neumorphic rounded-xl p-6">
+                                    <div class="flex items-center mb-6">
+                                        <div class="w-16 h-16 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-md mr-4">
+                                            <i class="fas fa-music text-xl"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="font-medium">Shape of You</p>
+                                            <p class="text-sm text-gray-500">Ed Sheeran</p>
+                                        </div>
+                                        <button class="text-primary-600 hover:text-primary-800 ml-4">
+                                            <i class="fas fa-heart text-xl"></i>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <input type="range" min="0" max="100" value="35" class="music-player-progress w-full">
+                                        <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                            <span>1:24</span>
+                                            <span>3:45</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-center space-x-6 space-x-reverse">
+                                        <button class="text-gray-600 hover:text-primary-600">
+                                            <i class="fas fa-random text-xl"></i>
+                                        </button>
+                                        <button class="text-gray-600 hover:text-primary-600">
+                                            <i class="fas fa-step-backward text-xl"></i>
+                                        </button>
+                                        <button class="w-12 h-12 rounded-full bg-primary-600 hover:bg-primary-700 text-white flex items-center justify-center shadow-lg">
+                                            <i class="fas fa-pause text-xl"></i>
+                                        </button>
+                                        <button class="text-gray-600 hover:text-primary-600">
+                                            <i class="fas fa-step-forward text-xl"></i>
+                                        </button>
+                                        <button class="text-gray-600 hover:text-primary-600">
+                                            <i class="fas fa-redo text-xl"></i>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between mt-6">
+                                        <button class="text-gray-600 hover:text-primary-600">
+                                            <i class="fas fa-volume-up"></i>
+                                        </button>
+                                        <input type="range" min="0" max="100" value="75" class="music-player-progress w-24">
+                                        <button class="text-gray-600 hover:text-primary-600">
+                                            <i class="fas fa-list-ul"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-6 flex justify-between items-center">
+                                    <p class="text-sm text-gray-500">نمایش 5 از 128 موزیک</p>
+                                    <div class="flex space-x-2 space-x-reverse">
+                                        <button class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                            <i class="fas fa-chevron-right text-gray-600"></i>
+                                        </button>
+                                        <button class="w-8 h-8 rounded-lg bg-primary-600 text-white flex items-center justify-center">
+                                            1
+                                        </button>
+                                        <button class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                            2
+                                        </button>
+                                        <button class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                            <i class="fas fa-chevron-left text-gray-600"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // مدیریت تب‌ها
+        document.addEventListener('DOMContentLoaded', function() {
+            // انتخاب تمام دکمه‌های تب
+            const tabButtons = document.querySelectorAll('.tab-button');
+            
+            // افزودن رویداد کلیک به هر دکمه تب
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // حذف کلاس active از همه دکمه‌ها
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                        if(btn.querySelector('.fa-chevron-left')) {
+                            btn.querySelector('.fa-chevron-left').classList.add('opacity-0');
+                        }
+                    });
+                    
+                    // افزودن کلاس active به دکمه فعلی
+                    this.classList.add('active');
+                    
+                    // نمایش آیکون چب برای تب فعال
+                    if(this.querySelector('.fa-chevron-left')) {
+                        this.querySelector('.fa-chevron-left').classList.remove('opacity-0');
+                    }
+                    
+                    // مخفی کردن تمام محتواهای تب
+                    const tabContents = document.querySelectorAll('.tab-content');
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // نمایش محتوای تب مربوطه
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // مدیریت منوی کناری در حالت موبایل
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.querySelector('aside');
+            
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('hidden');
+                sidebar.classList.toggle('absolute');
+                sidebar.classList.toggle('z-50');
+                sidebar.classList.toggle('h-full');
+            });
+            
+            // شبیه‌سازی پخش موزیک
+            const musicProgress = document.querySelector('.music-player-progress');
+            let isDragging = false;
+            
+            musicProgress.addEventListener('mousedown', function() {
+                isDragging = true;
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if(isDragging) {
+                    const rect = musicProgress.getBoundingClientRect();
+                    const percentage = Math.min(Math.max(0, e.clientX - rect.left), rect.width) / rect.width * 100;
+                    musicProgress.value = percentage;
+                }
+            });
+            
+            document.addEventListener('mouseup', function() {
+                isDragging = false;
+            });
+            
+            // شبیه‌سازی تغییر حجم
+            const volumeProgress = document.querySelectorAll('.music-player-progress')[1];
+            
+            volumeProgress.addEventListener('input', function() {
+                // اینجا می‌توانید کد تغییر حجم واقعی را اضافه کنید
+            });
+        });
+    </script>
+</body>
+</html>
